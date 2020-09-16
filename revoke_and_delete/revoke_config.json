@@ -1,0 +1,9 @@
+{
+  "tag_refs": ["delete_me", "delete_me_too"],
+  "airwall_ids": ["3c1fcea8-c703-47bb-9fc2-b7d22bfc27ca"],
+  "overlay_network_ids": ["2fa570d4-69f0-49c5-811f-057d85c2afb5"],
+  "airwall_group_ids": ["419b3ea8-5255-4caa-be59-e9521ea67f93", "cce6fc9c-b6cf-41de-9b10-6061f206de02"],
+  "conductor_url": "10.10.1.15",
+  "client_id": "QsOymf3F72-12eU15-zbBA",
+  "api_token": "huajgaST83CE6lmOVW_sdb"
+}
