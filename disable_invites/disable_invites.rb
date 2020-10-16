@@ -4,8 +4,6 @@ require 'optparse'
 require 'net/http'
 require 'json'
 require 'fileutils'
-require 'time'
-require 'openssl'
 
 class String
   # colorization
@@ -63,7 +61,7 @@ def gather_recipient_ids
   result = []
   if ['200'].include?(response.code)
     body = JSON.parse(response.body)
-    body.each { |recip| result << recip["id"] }
+    body.each { |recip| result << recip["id"] if recip["disabled_at"].nil? }
   else
     puts("ERROR: could not index invite recipients: #{response.body}")
     exit(1)
