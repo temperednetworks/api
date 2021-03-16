@@ -113,17 +113,23 @@ end
 def get_invite_info(invite_ids_emails)
   return if invite_ids_emails.nil?
 
-  response = @req.http_get("/api/v1/invite_recipients")
-  if ['200'].include?(response.code)
-    body = JSON.parse(response.body)
-    result = {}
-    body.each do |inv_recip|
-      email = invite_ids_emails[inv_recip['id']]
-      result[email] = inv_recip['activation_code'] unless email.nil?
+  next_page = "offset=0"
+  result = {}
+
+  while next_page != nil
+    url = "/api/v1/invite_recipients?#{next_page}"
+    response = @req.http_get(url)
+    if ['200'].include?(response.code)
+      body = JSON.parse(response.body)
+      next_page = body.dig('metadata', 'next_page')
+      body['data'].each do |inv_recip|
+        email = invite_ids_emails[inv_recip['id']]
+        result[email] = inv_recip['activation_code'] unless email.nil?
+      end
+    else
+      puts("ERROR: could not get invite_recipients: #{response.body}")
+      exit(1)
     end
-  else
-    puts("ERROR: could not get invite_recipients: #{response.body}")
-    exit(1)
   end
   result
 end

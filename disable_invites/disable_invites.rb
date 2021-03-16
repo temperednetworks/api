@@ -56,15 +56,20 @@ end
 
 # returns array of all invite recipient ids
 def gather_recipient_ids
-  url = "/api/v1/invite_recipients"
-  response = @req.http_get(url)
+  next_page = "offset=0"
   result = []
-  if ['200'].include?(response.code)
-    body = JSON.parse(response.body)
-    body.each { |recip| result << recip["id"] if recip["disabled_at"].nil? }
-  else
-    puts("ERROR: could not index invite recipients: #{response.body}")
-    exit(1)
+
+  while next_page != nil
+    url = "/api/v1/invite_recipients?#{next_page}"
+    response = @req.http_get(url)
+    if ['200'].include?(response.code)
+      body = JSON.parse(response.body)
+      next_page = body.dig('metadata', 'next_page')
+      body['data'].each { |recip| result << recip["id"] if recip["disabled_at"].nil? }
+    else
+      puts("ERROR: could not index invite recipients: #{response.body}")
+      exit(1)
+    end
   end
   result.uniq.compact
 end
