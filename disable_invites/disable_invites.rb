@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# This script gathers the ids of all invite recipients and disables them
+
 require 'optparse'
 require 'net/http'
 require 'json'
@@ -75,7 +77,7 @@ def gather_recipient_ids
 end
 
 def disable_recipients(ids)
-  return if ids.nil?
+  return if ids.empty?
 
   response = @req.http_post("/api/v1/invite_recipients/disable", { hip_invite_recipient_ids: ids})
   unless ['200'].include?(response.code)
