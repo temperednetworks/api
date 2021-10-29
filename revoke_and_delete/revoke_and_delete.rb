@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# This script accepts a config with lists of tag references, overlay_network_ids, airwall_group_ids and/or airwall_ids
+# and revokes then deletes any airwalls that are associated with those objects
+
 require 'optparse'
 require 'net/http'
 require 'json'
@@ -127,15 +130,22 @@ def find_active(aw_ids)
   res = []
 
   unless aw_ids.empty?
-    response = @req.http_get("/api/v1/hipservices")
-    if ['200'].include?(response.code)
-      body = JSON.parse(response.body)
-      body.each{ |hs| res << hs['id'] if aw_ids.include?(hs['id']) && hs['active'] } 
-    else
-      puts("ERROR: could not get list of active Airwalls: #{response.code} #{response.body}".red)
+    next_page = "offset=0"
+
+    while next_page != nil
+      url = "/api/v1/hipservices?filter=active::true&#{next_page}"
+      response = @req.http_get(url)
+      if ['200'].include?(response.code)
+        body = JSON.parse(response.body)
+        next_page = body.dig('metadata', 'next_page')
+        body['data'].each{ |hs| res << hs['id'] if aw_ids.include?(hs['id']) && hs['active'] }
+      else
+        puts("ERROR: could not get list of active Airwalls: #{response.code} #{response.body}".red)
+        exit(1)
+      end
     end
   end
- 
+
   res
 end
 
