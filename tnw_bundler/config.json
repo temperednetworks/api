@@ -1,0 +1,9 @@
+{
+  "interval": "10m",
+  "rollover": "24h",
+  "download_path": "/tmp/bundles",
+  "airwall_ids": ["470fda7c-eb4f-4c0d-ad72-a4ad7ada4214", "6a359bef-bebd-46e3-9b70-dd61b016126a", "ac39b05f-21c0-4717-ac4b-98f4a3732933"],
+  "conductor_url": "conductor.foo.com",
+  "client_id": "ksjdfl9843nndbweDFATwd",
+  "api_token": "<secret>"
+}
